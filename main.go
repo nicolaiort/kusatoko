@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -44,6 +45,15 @@ func main() {
 		for k, v := range r.Header {
 			w.Write([]byte(k + ": " + strings.Join(v, ", ") + "\n"))
 		}
+	})
+
+	http.HandleFunc("/status/", func(w http.ResponseWriter, r *http.Request) {
+		status, err := strconv.Atoi(r.URL.Path[len("/status/"):])
+		if err != nil {
+			http.Error(w, "Invalid status code", http.StatusBadRequest)
+			return
+		}
+		http.Error(w, http.StatusText(status), status)
 	})
 
 	err = http.ListenAndServe(":"+port, nil)
