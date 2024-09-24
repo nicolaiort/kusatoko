@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -29,6 +30,20 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(rootMessage))
+	})
+
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("ok"))
+	})
+
+	http.HandleFunc("/whatsmyip", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(strings.Split(r.RemoteAddr, ":")[0]))
+	})
+
+	http.HandleFunc("/headers", func(w http.ResponseWriter, r *http.Request) {
+		for k, v := range r.Header {
+			w.Write([]byte(k + ": " + strings.Join(v, ", ") + "\n"))
+		}
 	})
 
 	err = http.ListenAndServe(":"+port, nil)
