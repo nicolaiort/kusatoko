@@ -59,16 +59,23 @@ func initialize() {
 	}
 }
 
+func setupRoutes() *http.ServeMux {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", handleRoot)
+	mux.HandleFunc("/healthz", handleHealthz)
+	mux.HandleFunc("/whatsmyip", handleWhatsMyIP)
+	mux.HandleFunc("/headers", handleHeaders)
+	mux.HandleFunc("/status/", handleStatus)
+
+	return mux
+}
+
 func main() {
 	initialize()
+	mux := setupRoutes()
 
-	http.HandleFunc("/", handleRoot)
-	http.HandleFunc("/healthz", handleHealthz)
-	http.HandleFunc("/whatsmyip", handleWhatsMyIP)
-	http.HandleFunc("/headers", handleHeaders)
-	http.HandleFunc("/status/", handleStatus)
-
-	err := http.ListenAndServe(":"+port, nil)
+	err := http.ListenAndServe(":"+port, mux)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
