@@ -2,7 +2,6 @@
 
 ![GitHub License](https://img.shields.io/github/license/nicolaiort/kusatoko?style=for-the-badge) ![GitHub top language](https://img.shields.io/github/languages/top/nicolaiort/kusatoko?style=for-the-badge) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/nicolaiort/kusatoko?style=for-the-badge)
 
-
 A simple go server for testing connection stuff.
 
 ## Run
