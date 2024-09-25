@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -141,6 +142,64 @@ var _ = Describe("Main", func() {
 			})
 			It("should return status code 404", func() {
 				Expect(rr.Code).To(Equal(404))
+			})
+		})
+		When("`/status/asd` is requested", func() {
+			var rr *httptest.ResponseRecorder
+			BeforeEach(func() {
+				req, err := http.NewRequest("GET", "/status/asd", nil)
+				Expect(err).To(BeNil())
+
+				rr = httptest.NewRecorder()
+				handler := http.HandlerFunc(handleStatus)
+
+				handler.ServeHTTP(rr, req)
+			})
+			It("should return status code 400", func() {
+				Expect(rr.Code).To(Equal(400))
+			})
+		})
+	})
+	Context("initialize", func() {
+		When("PORT is not set", func() {
+			BeforeEach(func() {
+				os.Setenv("PORT", "")
+				initialize()
+			})
+			It("should default to 8080", func() {
+				Expect(port).To(Equal("8080"))
+			})
+		})
+		When("ROOT_MESSAGE is not set", func() {
+			BeforeEach(func() {
+				os.Setenv("ROOT_MESSAGE", "")
+				initialize()
+			})
+			It("should default to 'Hello, World!'", func() {
+				Expect(rootMessage).To(Equal("Hello, World!"))
+			})
+		})
+		When("ROOT_MESSAGE is set", func() {
+			BeforeEach(func() {
+				os.Setenv("ROOT_MESSAGE", "Test")
+				initialize()
+			})
+			It("should set the value", func() {
+				Expect(rootMessage).To(Equal("Test"))
+			})
+		})
+	})
+	Context("setupRoutes", func() {
+		When("routes are set up", func() {
+			It("should return a ServeMux", func() {
+				Expect(setupRoutes()).To(BeAssignableToTypeOf(http.NewServeMux()))
+			})
+		})
+	})
+	Context("main", func() {
+		When("the server is started", func() {
+			It("should not return an error", func() {
+				go main()
 			})
 		})
 	})
