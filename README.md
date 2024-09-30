@@ -1,6 +1,7 @@
 # Kusatoko
 
-![GitHub License](https://img.shields.io/github/license/nicolaiort/kusatoko?style=for-the-badge) ![GitHub top language](https://img.shields.io/github/languages/top/nicolaiort/kusatoko?style=for-the-badge) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/nicolaiort/kusatoko?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/nicolaiort/kusatoko?style=for-the-badge) ![GitHub top language](https://img.shields.io/github/languages/top/nicolaiort/kusatoko?style=for-the-badge) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/nicolaiort/kusatoko?style=for-the-badge) ![GHCR Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fipitio.github.io%2Fbackage%2Fnicolaiort%2Fkusatoko%2Fkusatoko.json&query=%24.downloads&style=for-the-badge&logo=docker&label=GHCR-Downloads) ![GHCR Image Size](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fipitio.github.io%2Fbackage%2Fnicolaiort%2Fkusatoko%2Fkusatoko.json&query=%24.size&style=for-the-badge&logo=docker&label=Size)
+
 
 A simple go server for testing connection stuff.
 
