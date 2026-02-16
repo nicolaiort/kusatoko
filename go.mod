@@ -4,8 +4,8 @@ go 1.26.0
 
 require (
 	github.com/joho/godotenv v1.5.1
-	github.com/onsi/ginkgo/v2 v2.22.1
-	github.com/onsi/gomega v1.36.2
+	github.com/onsi/ginkgo/v2 v2.28.1
+	github.com/onsi/gomega v1.39.1
 )
 
 require (
