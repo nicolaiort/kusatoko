@@ -1,0 +1,20 @@
+# VCS
+.git
+.gitignore
+
+# Build artifacts
+kusatoko
+*.exe
+*.test
+*.out
+coverage.html
+
+# Env
+.env
+.env.*
+
+# Editor/OS
+.idea
+.vscode
+.DS_Store
+Thumbs.db
