@@ -2,6 +2,8 @@ FROM mirror.gcr.io/library/golang:1.26-alpine AS builder
 
 WORKDIR /app
 
+RUN apk add --no-cache ca-certificates
+
 COPY go.mod go.sum ./
 RUN go mod download
 
@@ -12,8 +14,9 @@ FROM scratch
 
 LABEL org.opencontainers.image.source="https://github.com/nicolaiort/kusatoko"
 LABEL org.opencontainers.image.description="A simple testing webserver written in go"
-LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.licenses="MIT"
 
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app/server /server
-ADD https://curl.haxx.se/ca/cacert.pem /etc/ssl/certs/ca-certificates.crt
-ENTRYPOINT [ "/server" ]
+
+ENTRYPOINT ["/server"]
