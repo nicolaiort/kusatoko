@@ -38,19 +38,18 @@ jobs:
         run: |
           set -euo pipefail
           git fetch --tags --force
-          LAST_TAG=$(git tag --list 'v*.*.*' --sort=-v:refname | head -n 1)
-          if [ -z "$LAST_TAG" ]; then
+          LAST_VER=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' | sort -uV | tail -n 1)
+          if [ -z "$LAST_VER" ]; then
             echo "No release tag found, skipping."
             exit 0
           fi
+          LAST_TAG="$LAST_VER"
           echo "Last release tag: $LAST_TAG"
           if [ -z "$(git diff --name-only "$LAST_TAG"..HEAD -- go.mod go.sum Dockerfile)" ]; then
             echo "No dependency updates since $LAST_TAG, skipping."
             exit 0
           fi
-          VERSION=${LAST_TAG#v}
-          NEXT="v$(echo "$VERSION" | awk -F. '{printf "%d.%d.%d", $1, $2, $3+1}')"
-          echo "Creating patch release $NEXT"
+          NEXT="$(echo "$LAST_VER" | awk -F. '{printf "%d.%d.%d", $1, $2, $3+1}')"
           USER_ID=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
           git config user.name "${APP_SLUG}[bot]"
           git config user.email "${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
