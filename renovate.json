@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/Berlin",
+  "schedule": ["before 8am on every weekday"],
+  "labels": ["dependencies"],
+  "postUpdateOptions": ["gomodTidy"],
+  "packageRules": [
+    {
+      "description": "Group GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Automerge patch updates once checks pass",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    }
+  ],
+  "pruneBranchAfterAutomerge": true,
+  "pruneStaleBranches": true,
+  "registryAliases": {
+    "mirror.gcr.io": "docker.io"
+  }
+}
