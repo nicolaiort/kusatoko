@@ -17,17 +17,24 @@ jobs:
   patch-release:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3.3.0
+        with:
+          client-id: ${{ secrets.RENOVATE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          # PAT so the pushed tag triggers the Docker workflow
-          # (GITHUB_TOKEN pushes would not start new runs).
-          token: ${{ secrets.RELEASE_PAT }}
+          # App token so the pushed tag triggers the Docker workflow.
+          token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
       - name: Create patch release if dependencies changed
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
         run: |
           set -euo pipefail
           git fetch --tags --force
@@ -44,5 +51,8 @@ jobs:
           VERSION=${LAST_TAG#v}
           NEXT="v$(echo "$VERSION" | awk -F. '{printf "%d.%d.%d", $1, $2, $3+1}')"
           echo "Creating patch release $NEXT"
+          USER_ID=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
           git tag -a "$NEXT" -m "$NEXT"
           git push origin "$NEXT"
