@@ -163,7 +163,7 @@ var _ = Describe("Main", func() {
 	Context("initialize", func() {
 		When("PORT is not set", func() {
 			BeforeEach(func() {
-				os.Setenv("PORT", "")
+				Expect(os.Setenv("PORT", "")).To(Succeed())
 				initialize()
 			})
 			It("should default to 8080", func() {
@@ -172,7 +172,7 @@ var _ = Describe("Main", func() {
 		})
 		When("ROOT_MESSAGE is not set", func() {
 			BeforeEach(func() {
-				os.Setenv("ROOT_MESSAGE", "")
+				Expect(os.Setenv("ROOT_MESSAGE", "")).To(Succeed())
 				initialize()
 			})
 			It("should default to 'Hello, World!'", func() {
@@ -181,7 +181,7 @@ var _ = Describe("Main", func() {
 		})
 		When("ROOT_MESSAGE is set", func() {
 			BeforeEach(func() {
-				os.Setenv("ROOT_MESSAGE", "Test")
+				Expect(os.Setenv("ROOT_MESSAGE", "Test")).To(Succeed())
 				initialize()
 			})
 			It("should set the value", func() {

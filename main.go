@@ -14,20 +14,20 @@ var rootMessage string
 var port string
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(rootMessage))
+	_, _ = w.Write([]byte(rootMessage))
 }
 
 func handleHealthz(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("ok"))
+	_, _ = w.Write([]byte("ok"))
 }
 
 func handleWhatsMyIP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(strings.Split(r.RemoteAddr, ":")[0]))
+	_, _ = w.Write([]byte(strings.Split(r.RemoteAddr, ":")[0]))
 }
 
 func handleHeaders(w http.ResponseWriter, r *http.Request) {
 	for k, v := range r.Header {
-		w.Write([]byte(k + ": " + strings.Join(v, ", ") + "\n"))
+		_, _ = w.Write([]byte(k + ": " + strings.Join(v, ", ") + "\n"))
 	}
 }
 func handleStatus(w http.ResponseWriter, r *http.Request) {
