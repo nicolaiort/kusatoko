@@ -1,0 +1,48 @@
+name: Weekly Patch Release
+
+on:
+  schedule:
+    # Mondays 07:00 UTC
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-patch-release
+  cancel-in-progress: false
+
+jobs:
+  patch-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # PAT so the pushed tag triggers the Docker workflow
+          # (GITHUB_TOKEN pushes would not start new runs).
+          token: ${{ secrets.RELEASE_PAT }}
+          fetch-depth: 0
+
+      - name: Create patch release if dependencies changed
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: |
+          set -euo pipefail
+          git fetch --tags --force
+          LAST_TAG=$(git tag --list 'v*.*.*' --sort=-v:refname | head -n 1)
+          if [ -z "$LAST_TAG" ]; then
+            echo "No release tag found, skipping."
+            exit 0
+          fi
+          echo "Last release tag: $LAST_TAG"
+          if [ -z "$(git diff --name-only "$LAST_TAG"..HEAD -- go.mod go.sum Dockerfile)" ]; then
+            echo "No dependency updates since $LAST_TAG, skipping."
+            exit 0
+          fi
+          VERSION=${LAST_TAG#v}
+          NEXT="v$(echo "$VERSION" | awk -F. '{printf "%d.%d.%d", $1, $2, $3+1}')"
+          echo "Creating patch release $NEXT"
+          git tag -a "$NEXT" -m "$NEXT"
+          git push origin "$NEXT"
